@@ -16,6 +16,7 @@ dependencies = [
   "feast[redis]>=0.42",
   "redis>=4.2.2",
   "pyyaml>=6.0",
+  "scikit-learn>=1.7.2",
 ]
 
 [project.optional-dependencies]
