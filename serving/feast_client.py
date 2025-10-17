@@ -19,4 +19,13 @@ def get_online_features(image_id: int) -> np.ndarray:
     hist = [resp[f'mnist_stats__hist_{i}'][0] for i in range(16)]
     mean = resp['mnist_stats__pix_mean'][0]
     var = resp['mnist_stats__pix_var'][0]
-    return np.array(hist + [mean, var], dtype=np.float32)
+    image = np.array(resp['mnist_stats__flat'][0], dtype=np.float32).reshape(1, 28, 28)  # (1, 28, 28)
+    return image, np.array(hist + [mean, var], dtype=np.float32)
+
+def transform_online_features(image: np.ndarray, stats: np.ndarray) -> tuple[torch.Tensor, torch.Tensor]:
+    # feats is np.array(flat hist + mean, var), shape (19,), image is the first, stats is the rest
+    # Model expects image, stats, image is shape (N, 1, 28, 28) stats is (N, 18)
+    stats = torch.tensor(stats, dtype=torch.float32).unsqueeze(0)  # (1, 18)
+    image = torch.tensor(image, dtype=torch.float32).unsqueeze(0)  # (1, 1, 28, 28)
+    image_norm = (image - 0.1307) / 0.3081
+    return image_norm, stats
