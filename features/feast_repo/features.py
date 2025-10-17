@@ -13,6 +13,7 @@ mnist_features = FeatureView(
     name='mnist_stats',
     entities=[image],
     schema=[
+        Field(name='flat', dtype=Float32),
         Field(name='pix_mean', dtype=Float32),
         Field(name='pix_var', dtype=Float32),
         *[Field(name=f'hist_{i}', dtype=Float32) for i in range(16)],
