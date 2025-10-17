@@ -54,7 +54,7 @@ curl -s localhost:8080/healthz
 - Drift job (CronJob) compares recent inferences against reference features.
 
 ## Notes
-- Everything is ARM64-friendly. Images use `python:3.11-slim`.
+- Everything is ARM64-friendly. Images use `python:3.13-slim`.
 - Feast is configured to read Parquet from `./data/features.parquet` for local dev.
 - For simplicity, the API image bundles the model artifact at build time.
 

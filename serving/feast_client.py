@@ -9,6 +9,7 @@ def get_online_features(image_id: int) -> np.ndarray:
     store = FeatureStore(repo_path=REPO)
     resp = store.get_online_features(
         features=[
+            'mnist_stats:flat',
             'mnist_stats:pix_mean',
             'mnist_stats:pix_var',
             *[f'mnist_stats:hist_{i}' for i in range(16)],

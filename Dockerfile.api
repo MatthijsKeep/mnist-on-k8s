@@ -1,13 +1,34 @@
+FROM python:3.13-slim
 
-FROM python:3.11-slim
 WORKDIR /app
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
-COPY pyproject.toml /app/
-RUN pip install --no-cache-dir .
+
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1
+
+# Copy UV binary from official image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Install build dependencies and verify UV
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod +x /bin/uv \
+    && uv --version
+
+# Copy dependency files for caching
+COPY pyproject.toml uv.lock* ./
+
+# Create venv and sync dependencies (creates .venv by default)
+RUN uv sync --locked --no-cache --no-dev
+
+# Add venv bin to PATH so uvicorn is found
+ENV PATH="/app/.venv/bin:$PATH"
+
 COPY serving /app/serving
 COPY models /app/models
 COPY artifacts /app/artifacts
 COPY features/feast_repo /app/features/feast_repo
+
 EXPOSE 8000
+
 CMD ["uvicorn", "serving.app:app", "--host", "0.0.0.0", "--port", "8000"]
