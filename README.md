@@ -1,16 +1,16 @@
 
-# MNIST on K8s (Apple Silicon friendly)
+# MNIST on K8s (Apple Silicon setup)
 
 End-to-end, production-style ML system with simple MNIST modeling. Built to run locally on a MacBook (Apple Silicon) using open-source tools.
 
 ## Components
-- **Data & Features**: Polars feature pipeline (per-image stats + histogram)
+- **Data & Features**: Torchvision Datasets -> Polars feature pipeline (normalized image + per-image stats + histogram)
 - **Feature Store**: Feast (offline Parquet, online Redis)
-- **Training**: PyTorch Lightning logistic regression (CPU/MPS)
+- **Training**: PyTorch Lightning CNN (CPU/MPS)
 - **Serving**: FastAPI with Prometheus metrics; can fetch features from Feast or compute on the fly
-- **Orchestration**: Makefile + simple scripts (add Prefect later if desired)
+- **Orchestration**: Makefile + simple scripts (add Prefect later?)
 - **Observability**: Prometheus/Grafana (via Helm), `/metrics` endpoint
-- **Kubernetes**: kind local cluster; Helm chart for API
+- **Kubernetes**: Minikube local cluster; Helm chart for API, easy to deploy to Cloud
 - **CI/CD**: GitHub Actions workflow (build/test/images/deploy)
 - **Drift**: Simple nightly CronJob computing histogram drift (KL divergence)
 
@@ -19,7 +19,7 @@ End-to-end, production-style ML system with simple MNIST modeling. Built to run 
 ### 0) Prereqs
 - macOS + Apple Silicon (arm64)
 - Docker Desktop **or** colima
-- kubectl, helm, kind, python 3.11
+- kubectl, helm, minikube, python 3.11
 
 ### 1) Create and bootstrap cluster
 ```bash
