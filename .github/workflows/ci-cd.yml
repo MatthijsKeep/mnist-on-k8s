@@ -12,7 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install -e .[dev]
+      - run: uv install
+      - run: uv sync
       - run: pytest -q || true
       - name: Build images (multi-arch)
         uses: docker/setup-qemu-action@v3

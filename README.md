@@ -1,5 +1,6 @@
 
-# MNIST on K8s (Apple Silicon setup)
+# MNIST on K8s (Apple Silicon)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)![Kubernetes](https://img.shields.io/badge/kubernetes-%23326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)![Prometheus](https://img.shields.io/badge/prometheus-%23E6522C.svg?style=for-the-badge&logo=Prometheus&logoColor=white)![Grafana](https://img.shields.io/badge/Grafana-F2F4F9?style=for-the-badge&logo=grafana&logoColor=orange&labelColor=F2F4F9)![Helm](https://img.shields.io/badge/Helm-0F4C73?style=for-the-badge&logo=helm&logoColor)![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor)
 
 End-to-end, production-style ML system with simple MNIST modeling. Built to run locally on a MacBook (Apple Silicon) using open-source tools.
 
@@ -18,7 +19,7 @@ End-to-end, production-style ML system with simple MNIST modeling. Built to run 
 
 ### 0) Prereqs
 - macOS + Apple Silicon (arm64)
-- Docker Desktop **or** colima
+- Docker Desktop **or** colima **or** another way to run containers
 - kubectl, helm, minikube, python 3.11
 
 ### 1) Create and bootstrap cluster
@@ -59,4 +60,9 @@ curl -s localhost:8080/healthz
 - For simplicity, the API image bundles the model artifact at build time.
 
 ## Roadmap (stretch)
-- Swap to MLflow registry; KServe or Ray Serve; Evidently reports; Argo Rollouts
+- Deploy to VPS, host on a website
+- Interactive inputs
+- Swap to MLflow registry
+- KServe or Ray Serve
+- Evidently reports
+- Argo Rollouts
