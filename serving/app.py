@@ -2,7 +2,7 @@
 from fastapi import FastAPI, UploadFile
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from serving.model_loader import load_model, predict_from_features
-from serving.feast_client import get_online_features
+from serving.feast_client import get_online_features, transform_online_features
 from serving.metrics import REQUEST_TIME
 from PIL import Image
 import numpy as np
@@ -25,8 +25,9 @@ def metrics():
 @app.post('/predict_by_id')
 def predict_by_id(image_id: int):
     with REQUEST_TIME.time():
-        feats = get_online_features(image_id)
-        pred = int(predict_from_features(model, feats))
+        image, stats = get_online_features(image_id)
+        image, stats = transform_online_features(image, stats)
+        pred = int(predict_from_features(model, image, stats))
         PRED_COUNT.labels('ok').inc()
         return {"image_id": image_id, "pred": pred}
 

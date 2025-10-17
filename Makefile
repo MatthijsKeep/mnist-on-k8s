@@ -8,6 +8,7 @@ REGISTRY ?= yourusername# Set for cloud, e.g., your Docker Hub/ECR
 LOCAL ?= true# true for Minikube local; false for cloud/VPS
 MINIKUBE_PROFILE ?= mnist
 CLUSTER_NAME ?= $(MINIKUBE_PROFILE)
+REDIS_PASSWORD ?= redispw#set from environment or helm chart during bootstrap
 
 # Full image ref
 # After variables section
@@ -16,9 +17,6 @@ REPO_PATH := $(IMAGE_NAME)# e.g., mnist-api (local)
 else
 REPO_PATH := $(REGISTRY)/$(IMAGE_NAME)# e.g., yourusername/mnist-api (remote)
 endif
-
-
-
 
 # Echo value of local
 print-local:
@@ -47,9 +45,11 @@ ifeq ($(LOCAL),true)
 	helm repo add bitnami https://charts.bitnami.com/bitnami || true
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts || true
 	kubectl create ns $(NAMESPACE) || true
-	helm upgrade --install redis bitnami/redis -n $(NAMESPACE) --set architecture=standalone
+	helm upgrade --install redis bitnami/redis -n $(NAMESPACE) --set architecture=standalone --set auth.enabled=true --set auth.password=$(REDIS_PASSWORD)
 	helm upgrade --install kube-prom-stack prometheus-community/kube-prometheus-stack -n $(NAMESPACE) \
 		--set grafana.enabled=true --set grafana.service.type=ClusterIP
+	kubectl port-forward service/redis-master -n ml 6379:6379
+	kubectl port-forward service/kube-prom-stack-grafana -n ml 3000:80 &
 	@echo "Bootstrap complete for '$(NAMESPACE)'."
 else
 	@echo "Skipping bootstrap for remote; run manually if needed."
@@ -59,7 +59,8 @@ features:  ## Run feature pipeline
 	uv run python -m pipelines.feature_pipeline
 
 feast:  ## Apply and materialize Feast
-	cd features/feast_repo && uv run feast apply && uv run feast materialize-incremental $$(date +%F)
+	cd features/feast_repo && uv run feast apply && uv run feast materialize-incremental $$(date +%Y-%m-%dT%H:%M:%S) \
+		&& cd -
 
 train:  ## Train model
 	uv run python -m pipelines.train

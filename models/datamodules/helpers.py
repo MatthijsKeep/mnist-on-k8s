@@ -26,7 +26,8 @@ def fetch_and_prepare_features(repo_path="features/feast_repo", n_samples=60000)
     assert len(training_df) == n_samples, "Missing joins—check image_id range"
     
     # Prepare arrays
-    training_df['flat'] = training_df['flat'].apply(lambda x: np.array(x, dtype=np.float32))
+    assert np.frombuffer(training_df['flat'].iloc[0], dtype=np.float32).shape == (784,), "Flat image shape mismatch, must be (784,)"
+    training_df['flat'] = training_df['flat'].apply(lambda x: np.array(np.frombuffer(x, dtype=np.float32).reshape(784,), dtype=np.float64))
     image_flat = np.stack(training_df['flat'].values)  # (N, 784)
     
     stats_cols = ['pix_mean', 'pix_var'] + [f'hist_{i}' for i in range(16)]

@@ -25,7 +25,9 @@ spec:
             - name: FEAST_REPO_PATH
               value: /app/features/feast_repo
             - name: REDIS_HOST
-              value: redis.{{ .Release.Namespace }}.svc.cluster.local
+              value: redis-master.{{ .Release.Namespace }}.svc.cluster.local
+            - name: REDIS_PASSWORD
+              value: redispw #probably not the best way to do this in production
           resources:
             {{- toYaml .Values.resources | nindent 16 }}
           readinessProbe:

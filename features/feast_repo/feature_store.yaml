@@ -1,9 +1,11 @@
-
-project: mnist
-registry: data/feast/registry.db
+project: mnist  # Or your project name
+registry: data/registry.db
 provider: local
-online_store:
-  type: redis
-  connection_string: ${REDIS_HOST:-localhost}:6379
 offline_store:
   type: file
+online_store:
+  type: redis
+  connection_string: "localhost:6379,password=redispw"  # host:port,password=pass (no quotes if no spaces)
+  # If no password: "localhost:6379"
+  # For cluster: "redis1:6379,redis2:6379,ssl=true,password=pass"
+  key_ttl_seconds: null  # Or 86400 for 24h expiry if needed

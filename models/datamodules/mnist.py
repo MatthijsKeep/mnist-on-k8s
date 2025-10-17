@@ -45,7 +45,7 @@ class MNISTDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
         from models.datamodules.helpers import fetch_and_prepare_features
         (train_image, train_stats, train_y), (val_image, val_stats, val_y) = fetch_and_prepare_features()
-        
+        print(f"Train data shapes: image {train_image.shape}, stats {train_stats.shape}, y {train_y.shape}")
         self.train_dataset = MNISTDataset(train_image, train_stats, train_y, is_train=True)
         self.val_dataset = MNISTDataset(val_image, val_stats, val_y, is_train=False, stats_scaler=self.train_dataset.stats_scaler)
 
