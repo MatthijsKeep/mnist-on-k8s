@@ -28,7 +28,7 @@ class MNISTDataset(Dataset):
     def __len__(self):
         return len(self.labels)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         image = self.image[idx]   # (1, 28, 28)
         stats = self.stats[idx]        # (18,)
         y = self.labels[idx]           # scalar

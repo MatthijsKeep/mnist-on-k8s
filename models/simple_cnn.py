@@ -67,9 +67,9 @@ class SimpleCNN(pl.LightningModule):
 
         self.criterion = nn.CrossEntropyLoss()
 
-    def forward(self, image_flat, stats):
+    def forward(self, image, stats):
         # Image branch
-        img_feat = self.cnn_block(image_flat)
+        img_feat = self.cnn_block(image)
         # (B, 1024)
         img_feat = self.cnn_fc(img_feat)
         # (B, 128)

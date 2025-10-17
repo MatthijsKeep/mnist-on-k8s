@@ -1,21 +1,22 @@
 
 import torch
 from pathlib import Path
-from models.mnist_logreg import MNISTLogReg
+from models.simple_cnn import SimpleCNN
 import numpy as np
 
 ARTIFACT = Path('artifacts/model.pt')
 
 def load_model():
     ckpt = torch.load(ARTIFACT, map_location='cpu')
-    model = MNISTLogReg(in_dim=ckpt['in_dim'])
+    model = SimpleCNN(in_dim_stats=ckpt['in_dim_stats'],
+                      n_classes=ckpt['n_classes'],
+                      lr=ckpt['lr'])
     model.load_state_dict(ckpt['state_dict'])
     model.eval()
     return model
 
-def predict_from_features(model, feats: np.ndarray):
+def predict_from_features(model, image: torch.Tensor, stats: torch.Tensor) -> int:
     import torch
-    x = torch.tensor(feats, dtype=torch.float32).unsqueeze(0)
     with torch.no_grad():
-        logits = model(x)
+        logits = model(image, stats)
         return logits.argmax(1).item()
