@@ -1,0 +1,46 @@
+
+from fastapi import FastAPI, UploadFile
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from serving.model_loader import load_model, predict_from_features
+from serving.feast_client import get_online_features
+from serving.metrics import REQUEST_TIME
+from PIL import Image
+import numpy as np
+import io
+
+app = FastAPI()
+PRED_COUNT = Counter("predictions_total", "Total predictions", ["outcome"])    
+
+model = load_model()
+
+@app.get('/healthz')
+def healthz():
+    return {"ok": True}
+
+@app.get('/metrics')
+def metrics():
+    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
+
+@app.post('/predict_by_id')
+def predict_by_id(image_id: int):
+    with REQUEST_TIME.time():
+        feats = get_online_features(image_id)
+        pred = int(predict_from_features(model, feats))
+        PRED_COUNT.labels('ok').inc()
+        return {"image_id": image_id, "pred": pred}
+
+def extract_features_np(img28x28: np.ndarray) -> np.ndarray:
+    flat = img28x28.reshape(-1).astype(np.float32) / 255.0
+    bins = np.linspace(0, 1, 17)
+    hist, _ = np.histogram(flat, bins=bins, density=True)
+    mean = flat.mean(); var = flat.var()
+    return np.concatenate([hist, [mean, var]]).astype(np.float32)
+
+@app.post('/predict_file')
+async def predict_file(file: UploadFile):
+    img = Image.open(io.BytesIO(await file.read())).convert('L').resize((28, 28))
+    arr = np.asarray(img)
+    feats = extract_features_np(arr)
+    pred = int(predict_from_features(model, feats))
+    PRED_COUNT.labels('ok').inc()
+    return {"pred": pred}

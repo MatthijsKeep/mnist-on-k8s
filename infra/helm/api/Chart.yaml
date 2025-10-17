@@ -1,0 +1,5 @@
+
+apiVersion: v2
+name: mnist-api
+version: 0.1.0
+type: application
