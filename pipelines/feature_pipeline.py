@@ -10,6 +10,7 @@ DATA_DIR.mkdir(exist_ok=True, parents=True)
 ARTIFACTS.mkdir(exist_ok=True, parents=True)
 
 def compute_features(images: np.ndarray) -> pl.DataFrame:
+    updated_at = np.datetime64('now', 'ms')
     flat = images.reshape(len(images), -1).astype(np.float32) / 255.0
     mean = flat.mean(axis=1)
     var = flat.var(axis=1)
@@ -18,6 +19,7 @@ def compute_features(images: np.ndarray) -> pl.DataFrame:
     hist = np.apply_along_axis(lambda r: np.histogram(r, bins=bins)[0] / len(r), 1, flat)
     df = pl.DataFrame({
         'image_id': np.arange(len(images), dtype=np.int64),
+        'updated_at': np.repeat(updated_at, len(images)),
         'pix_mean': mean,
         'pix_var': var,
     })
@@ -28,6 +30,7 @@ def compute_features(images: np.ndarray) -> pl.DataFrame:
 def validate(df: pl.DataFrame):
     assert df.select(pl.col('pix_mean').is_between(0,1).all()).item(), 'pix_mean out of [0,1]'
     assert df.select(pl.col('pix_var').is_between(0,1).all()).item(), 'pix_var out of [0,1]'
+    assert df.select(pl.col('updated_at').max()).item() <= np.datetime64('now', 'ms'), 'updated_at in future'
     # simple sanity: histogram rows sum to ~1 (density)
     hist_cols = [f'hist_{i}' for i in range(16)]
     sums = df.select(pl.sum_horizontal(hist_cols).alias('s')).to_series()

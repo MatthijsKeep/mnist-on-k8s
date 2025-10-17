@@ -25,7 +25,7 @@ features:
 	uv run python -m pipelines.feature_pipeline
 
 feast:
-	cd features/feast_repo && feast apply && feast materialize-incremental $$(date +%F)
+	cd features/feast_repo && uv run feast apply && uv run feast materialize-incremental $$(date +%F)
 
 train:
 	uv run python -m pipelines.train

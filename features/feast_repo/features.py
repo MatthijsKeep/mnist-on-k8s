@@ -1,12 +1,12 @@
-
 from feast import Entity, FeatureView, Field, FileSource
 from feast.types import Float32, Int64
+from feast.value_type import ValueType
 
-image = Entity(name='image_id', join_keys=['image_id'])
+image = Entity(name='image_id', join_keys=['image_id'], value_type=ValueType.INT64)
 
 batch_src = FileSource(
-    path='artifacts/features.parquet',
-    timestamp_field=None,
+    path='../../artifacts/features.parquet',
+    timestamp_field="updated_at",
 )
 
 mnist_features = FeatureView(
