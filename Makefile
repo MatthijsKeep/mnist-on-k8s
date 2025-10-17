@@ -22,13 +22,13 @@ bootstrap: minikube
 	@echo "Bootstrap complete for namespace '$(NAMESPACE)'."
 
 features:
-	python -m pipelines.feature_pipeline
+	python3 -m pipelines.feature_pipeline
 
 feast:
 	cd features/feast_repo && feast apply && feast materialize-incremental $$(date +%F)
 
 train:
-	python -m pipelines.train
+	python3 -m pipelines.train
 
 api-build:
 	docker build -f Dockerfile.api -t mnist-api:local .
@@ -37,7 +37,7 @@ deploy: api-build
 	helm upgrade --install mnist-api infra/helm/api -n $(NAMESPACE) --set image.repository=mnist-api --set image.tag=local
 
 drift-run:
-	python -m drift.drift_job
+	python3 -m drift.drift_job
 
 destroy:
 	minikube delete --profile $(MINIKUBE_PROFILE) || true
