@@ -10,4 +10,13 @@ __pycache__/
 data/
 features.parquet
 
+# model files
 
+## model checkpoints
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+
+## logs
+lightning_logs/
