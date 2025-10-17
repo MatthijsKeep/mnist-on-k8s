@@ -1,1 +1,13 @@
+# dependencies for project
+
+## venv
 uv.lock
+
+# cache files
+__pycache__/
+
+# data files
+data/
+features.parquet
+
+

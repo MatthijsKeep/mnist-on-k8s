@@ -15,7 +15,7 @@ def compute_features(images: np.ndarray) -> pl.DataFrame:
     var = flat.var(axis=1)
     # 16-bin histogram per image
     bins = np.linspace(0, 1, 17)
-    hist = np.apply_along_axis(lambda r: np.histogram(r, bins=bins, density=True)[0], 1, flat)
+    hist = np.apply_along_axis(lambda r: np.histogram(r, bins=bins)[0] / len(r), 1, flat)
     df = pl.DataFrame({
         'image_id': np.arange(len(images), dtype=np.int64),
         'pix_mean': mean,
