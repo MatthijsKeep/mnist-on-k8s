@@ -6,7 +6,7 @@ CLUSTER_NAME=mnist
 MINIKUBE_PROFILE=$(CLUSTER_NAME)
 
 minikube:
-	minikube start --profile $(MINIKUBE_PROFILE) --driver=docker --cpus=4 --memory=8192 --extra-config=apiserver.service-node-port-range=1-65535 || true
+	minikube start --profile $(MINIKUBE_PROFILE) --driver=qemu --cpus=4 --memory=8192 --extra-config=apiserver.service-node-port-range=1-65535 || true
 	kubectl config use-context $(MINIKUBE_PROFILE) || true
 	minikube addons enable ingress --profile $(MINIKUBE_PROFILE) || true
 	kubectl label nodes $(MINIKUBE_PROFILE) ingress-ready=true --overwrite || true

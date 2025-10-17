@@ -25,7 +25,7 @@ End-to-end, production-style ML system with simple MNIST modeling. Built to run 
 ```bash
 make bootstrap
 ```
-This installs Redis (online store), MinIO (optional), Prometheus, Grafana.
+This installs Redis (online store), MinIO (optional), Prometheus, Grafana. Check if the cluster is running by doing
 
 ### 2) Generate features (offline Parquet) and apply Feast
 ```bash
