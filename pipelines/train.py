@@ -44,6 +44,8 @@ def save_model(
         {
             "state_dict": model.state_dict(),
             "in_dim_stats": stats_dim,  # Corrected to reference stats dimension
+            "n_classes": model.classifier[-1].out_features,
+            "lr": model.hparams.lr,
             "feature_refs": feature_refs,
             "saved_at": datetime.now().isoformat(),
         },
