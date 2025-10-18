@@ -69,9 +69,18 @@ predictBtn.addEventListener('click', async () => {
                 method: 'POST',
                 body: formData
             });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+                throw new Error(errorData.detail || 'Prediction failed');
+            }
             const data = await response.json();
             console.log(data);
-            resultDiv.textContent = `Predicted: ${data.pred}`;
+
+            resultDiv.style.whiteSpace = 'pre-wrap';
+            const confStrings = Object.entries(data.confidences)
+                .filter(([digit, conf]) => conf >= 1)
+                .map(([digit, conf]) => `${digit}: ${conf}%`);
+            resultDiv.textContent = `Predicted: ${data.pred}\n\nConfidences:\n${confStrings.join('\n')}`;
         } catch (error) {
             resultDiv.textContent = 'Error: ' + error.message;
         }

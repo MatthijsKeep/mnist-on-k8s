@@ -38,9 +38,9 @@ def predict_by_id(image_id: int):
     with REQUEST_TIME.time():
         image, stats = get_online_features(image_id)
         image, stats = transform_online_features(image, stats)
-        pred = int(predict_from_features(model, image, stats))
+        prediction, confidences = predict_from_features(model, image, stats)
         PRED_COUNT.labels('ok').inc()
-        return {"image_id": image_id, "pred": pred}
+        return {"image_id": image_id, "pred": int(prediction), "confidences": confidences}
 
 def extract_features_np(img28x28: np.ndarray) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     # Model expects image, stats, image is shape (N, 1, 28, 28) stats is (N, 18)
@@ -61,6 +61,6 @@ async def predict_drawing(file: UploadFile):
     img = Image.open(io.BytesIO(await file.read())).convert('L').resize((28, 28))
     arr = np.asarray(img)
     image, stats = extract_features_np(arr)
-    pred = int(predict_from_features(model, image, stats))
+    pred, conf = predict_from_features(model, image, stats)
     PRED_COUNT.labels('ok').inc()
-    return {"pred": pred}
+    return {"pred": int(pred), "confidences": conf}

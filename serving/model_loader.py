@@ -15,8 +15,13 @@ def load_model():
     model.eval()
     return model
 
-def predict_from_features(model, image: torch.Tensor, stats: torch.Tensor) -> int:
-    import torch
+import torch
+
+def predict_from_features(model, image: torch.Tensor, stats: torch.Tensor) -> tuple[int, dict[int, float]]:
     with torch.no_grad():
         logits = model(image, stats)
-        return logits.argmax(1).item()
+        probs = torch.softmax(logits, dim=1).squeeze(0)
+        pred_class = logits.argmax(dim=1).item()
+        confs_ret = {i: round(float(probs[i].item() * 100), 2) for i in range(len(probs))}
+        return pred_class, confs_ret
+
