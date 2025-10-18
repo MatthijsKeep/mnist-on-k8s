@@ -4,6 +4,10 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org)[![Kubernetes](https://img.shields.io/badge/kubernetes-%23326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io)[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)[![Prometheus](https://img.shields.io/badge/prometheus-%23E6522C.svg?style=for-the-badge&logo=Prometheus&logoColor=white)](https://prometheus.io)[![Grafana](https://img.shields.io/badge/Grafana-333333?style=for-the-badge&logo=grafana&logoColor=orange&labelColor=333333)](https://grafana.com)[![Helm](https://img.shields.io/badge/Helm-0F4C73?style=for-the-badge&logo=helm&logoColor)](https://helm.sh)[![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor)](https://redis.io)[![Polars](https://img.shields.io/badge/Polars-0275ff?style=for-the-badge&logo=polars&logoColor)](https://pola.rs)
 
 
+
+https://github.com/user-attachments/assets/6e462bcb-63d8-4e53-a7c4-ef7bc378c58b
+
+
 End-to-end, production-emulating ML system. Uses MNIST as example, but any dataset/model can be used with PyTorch. Built to run locally on Kubernetes on a MacBook (Apple Silicon).  My first attempt at getting some experience with Kubernetes.
 
 ## Components
