@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digit Predictor</title>
+    <style>
+        body { background-color: #f0f0f0; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        canvas { border: 2px solid #333; background-color: white; cursor: crosshair; }
+        #container { text-align: center; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #result { margin-top: 20px; font-size: 24px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Draw a Digit (0-9)</h1>
+        <p>Or something else, and see what happens...</p>
+        <canvas id="canvas" width="280" height="280" style="background-color: #222222;"></canvas>
+        <br>
+        <button id="clear">Clear</button>
+        <button id="predict">Predict</button>
+        <div id="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
