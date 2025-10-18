@@ -70,7 +70,8 @@ predictBtn.addEventListener('click', async () => {
                 body: formData
             });
             const data = await response.json();
-            resultDiv.textContent = `Predicted: ${data.prediction} (Confidence: ${Math.round(data.confidence * 100)}%)`;
+            console.log(data);
+            resultDiv.textContent = `Predicted: ${data.pred}`;
         } catch (error) {
             resultDiv.textContent = 'Error: ' + error.message;
         }
