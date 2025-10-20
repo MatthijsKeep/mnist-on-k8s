@@ -13,14 +13,17 @@ ARTIFACTS_DIR.mkdir(exist_ok=True, parents=True)
 
 MODEL_SAVE_PATH = ARTIFACTS_DIR / "model.pt"
 
-def get_sample_batch(dm: MNISTDataModule) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+
+def get_sample_batch(
+    dm: MNISTDataModule,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Retrieve and return a sample batch from the training dataloader."""
     sample_batch = next(iter(dm.train_dataloader()))
     print(f"Sample batch shapes: {[x.shape for x in sample_batch]}")
     return sample_batch
 
 
-def create_trainer(epochs: int = 10, device: str = 'cpu') -> pl.Trainer:
+def create_trainer(epochs: int = 10, device: str = "cpu") -> pl.Trainer:
     """Create and configure the PyTorch Lightning Trainer."""
     early_stop_callback = pl.callbacks.EarlyStopping(
         monitor="val_acc", patience=3, mode="max"

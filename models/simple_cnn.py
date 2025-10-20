@@ -57,7 +57,7 @@ class SimpleCNN(pl.LightningModule):
         # Initialize for stable gradients
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
             elif isinstance(m, nn.Linear):
@@ -104,10 +104,14 @@ class SimpleCNN(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=3e-4, weight_decay=1e-5)  # Lower lr, L2 reg for stability
-        scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3)
+        optimizer = torch.optim.Adam(
+            self.parameters(), lr=3e-4, weight_decay=1e-5
+        )  # Lower lr, L2 reg for stability
+        scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=3)
         return {
-            'optimizer': optimizer,
-            'lr_scheduler': {'scheduler': scheduler, 'monitor': 'val_loss'},  # Decays if val_loss stalls
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "monitor": "val_loss",
+            },  # Decays if val_loss stalls
         }
-
