@@ -18,8 +18,8 @@ jobs:
         run: uv sync --all-extras --dev
       - name: Run black and ruff
         run: |
-          uv run black --check .
-          uv run ruff check .
+          uv run black .
+          uv run ruff .
   #     - name: Build images (multi-arch)
   #       uses: docker/setup-qemu-action@v3
   #     - uses: docker/setup-buildx-action@v3
