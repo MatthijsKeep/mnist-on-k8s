@@ -1,7 +1,6 @@
 import torch
 from pathlib import Path
 from models.simple_cnn import SimpleCNN
-import numpy as np
 
 ARTIFACT = Path("artifacts/model.pt")
 
@@ -14,10 +13,6 @@ def load_model():
     model.load_state_dict(ckpt["state_dict"])
     model.eval()
     return model
-
-
-import torch
-
 
 def predict_from_features(
     model, image: torch.Tensor, stats: torch.Tensor

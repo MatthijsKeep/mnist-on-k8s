@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from feast import FeatureStore
-from feast.repo_config import load_repo_config, RepoConfig
+from feast.repo_config import load_repo_config
 import torch
 
 REPO = os.environ.get("FEAST_REPO_PATH", "features/feast_repo")

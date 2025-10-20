@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 from serving.model_loader import load_model, predict_from_features
 from serving.feast_client import get_online_features, transform_online_features
 from serving.metrics import REQUEST_TIME
