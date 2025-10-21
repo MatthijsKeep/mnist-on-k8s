@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
-import pytorch_lightning as pl
+import lightning as L
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
-class SimpleCNN(pl.LightningModule):
+class SimpleCNN(L.LightningModule):
     """A simple CNN combined with an MLP for image and stats classification."""
 
     def __init__(self, in_dim_stats: int, n_classes: int = 10, lr: float = 1e-2):

@@ -1,8 +1,10 @@
 import torch
-import pytorch_lightning as pl
+import lightning as L
+
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
+from lightning.pytorch.loggers.mlflow import MLFlowLogger
 
 from models.simple_cnn import SimpleCNN
 from models.datamodules.mnist import MNISTDataModule
@@ -23,12 +25,12 @@ def get_sample_batch(
     return sample_batch
 
 
-def create_trainer(epochs: int = 10, device: str = "cpu") -> pl.Trainer:
+def create_trainer(epochs: int = 10, device: str = "cpu") -> L.Trainer:
     """Create and configure the PyTorch Lightning Trainer."""
-    early_stop_callback = pl.callbacks.EarlyStopping(
+    early_stop_callback = L.callbacks.EarlyStopping(
         monitor="val_acc", patience=3, mode="max"
     )
-    return pl.Trainer(
+    return L.Trainer(
         max_epochs=epochs,
         accelerator=device,
         devices=1,
@@ -59,7 +61,7 @@ def save_model(
 
 def main() -> None:
     """Main training pipeline for the MNIST model."""
-    pl.seed_everything(42, workers=True)  # For reproducibility
+    L.seed_everything(42, workers=True)  # For reproducibility
 
     batch_size = 256
     num_workers = 4
