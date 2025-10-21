@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: mlflow
-        image: ghcr.io/mlflow/mlflow:v2.10.0
-        command: ["mlflow", "server"]
-        args: ["--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "postgresql://mlflow:mlflow@mlflow-postgres-service:5432/mlflow", "--default-artifact-root", "s3://mlflow-bucket/", "--file-store", "/mlflow"]
+        image: ghcr.io/mlflow/mlflow:v3.5.0
+        command: ["bash", "-c"]
+        args: ["pip install psycopg2-binary && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://mlflow:mlflow@mlflow-postgres-service:5432/mlflow --default-artifact-root s3://mlflow-bucket/"]
         env:
         - name: MLFLOW_S3_ENDPOINT_URL
           value: "http://mlflow-minio-service.ml.svc.cluster.local:9000"
