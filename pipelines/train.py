@@ -7,6 +7,7 @@ from typing import Tuple
 from lightning.pytorch.loggers.mlflow import MLFlowLogger
 
 from models.simple_cnn import SimpleCNN
+from models.complex_cnn import ComplexCNN
 from models.datamodules.mnist import MNISTDataModule
 
 
@@ -83,8 +84,8 @@ def main() -> None:
     X, stats, y = get_sample_batch(dm)
     stats_dim = stats.shape[1]
 
-    model = SimpleCNN(in_dim_stats=stats_dim, n_classes=n_classes, lr=lr)
-    trainer = create_trainer(epochs=5,)
+    model = ComplexCNN(in_dim_stats=stats_dim, n_classes=n_classes, lr=lr)
+    trainer = create_trainer(epochs=5, device="mps" if torch.backends.mps.is_available() else "cpu")
     trainer.fit(model, datamodule=dm)
 
     # Define feature references for reproducibility (Feast-specific)
