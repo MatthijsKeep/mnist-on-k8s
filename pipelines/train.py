@@ -27,15 +27,23 @@ def get_sample_batch(
 
 def create_trainer(epochs: int = 10, device: str = "cpu") -> L.Trainer:
     """Create and configure the PyTorch Lightning Trainer."""
-    early_stop_callback = L.callbacks.EarlyStopping(
-        monitor="val_acc", patience=3, mode="max"
+    # Log to our MLFlow server, running at localhost:5000, have to create an experiment first
+
+    mlflow_logger = MLFlowLogger(
+        experiment_name="mnist_cnn",
+        tracking_uri="http://localhost:5000",
+        log_model=True,
+    )
+
+    early_stop_callback = L.pytorch.callbacks.early_stopping.EarlyStopping(
+        monitor="val_acc", patience=1, mode="max"
     )
     return L.Trainer(
         max_epochs=epochs,
         accelerator=device,
         devices=1,
-        logger=True,  # Enables default TensorBoardLogger
         callbacks=[early_stop_callback],
+        logger=mlflow_logger,
     )
 
 
