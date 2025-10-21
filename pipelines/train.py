@@ -38,6 +38,7 @@ def create_trainer(epochs: int = 10, device: str = "cpu") -> L.Trainer:
     early_stop_callback = L.pytorch.callbacks.early_stopping.EarlyStopping(
         monitor="val_acc", patience=1, mode="max"
     )
+
     return L.Trainer(
         max_epochs=epochs,
         accelerator=device,
@@ -83,7 +84,7 @@ def main() -> None:
     stats_dim = stats.shape[1]
 
     model = SimpleCNN(in_dim_stats=stats_dim, n_classes=n_classes, lr=lr)
-    trainer = create_trainer()
+    trainer = create_trainer(epochs=5,)
     trainer.fit(model, datamodule=dm)
 
     # Define feature references for reproducibility (Feast-specific)
