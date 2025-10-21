@@ -1,4 +1,4 @@
-import pytorch_lightning as pl
+import lightning as L
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from sklearn.preprocessing import StandardScaler
@@ -50,7 +50,7 @@ class MNISTDataset(Dataset):
         return image, stats, y
 
 
-class MNISTDataModule(pl.LightningDataModule):
+class MNISTDataModule(L.LightningDataModule):
     def __init__(self, batch_size=256, num_workers=4):
         super().__init__()
         self.batch_size = batch_size

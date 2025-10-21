@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mlflow-postgres
+  namespace: ml
+spec:
+  serviceName: mlflow-postgres-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow-postgres
+  template:
+    metadata:
+      labels:
+        app: mlflow-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:14
+        env:
+        - name: POSTGRES_DB
+          value: mlflow
+        - name: POSTGRES_USER
+          value: mlflow
+        - name: POSTGRES_PASSWORD
+          value: mlflow
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-postgres-service
+  namespace: ml
+spec:
+  selector:
+    app: mlflow-postgres
+  ports:
+  - port: 5432

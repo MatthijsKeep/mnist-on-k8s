@@ -1,37 +1,46 @@
+# To test and compare CNN architectures on MLFlow
 import torch
 import torch.nn as nn
 import lightning as L
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-
-class SimpleCNN(L.LightningModule):
-    """A simple CNN combined with an MLP for image and stats classification."""
+class ComplexCNN(L.LightningModule):
+    """A more complex CNN combined with an MLP for image and stats classification."""
 
     def __init__(self, in_dim_stats: int, n_classes: int = 10, lr: float = 1e-2):
         super().__init__()
         self.save_hyperparameters()
         self.cnn_block = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3, stride=1, padding=1),
-            # (B, 1, 28, 28) -> (B, 16, 28, 28)
+            # (B, 1, 28, 28)
+            nn.BatchNorm2d(1),
+            # (B, 1, 28, 28)
+            nn.Conv2d(1, 256, kernel_size=7, padding=3),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            # (B, 16, 28, 28) -> (B, 16, 14, 14)
-            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1),
-            # (B, 16, 14, 14) -> (B, 32, 14, 14)
+            # (B, 256, 28, 28)
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            # (B, 256, 14, 14)
+            nn.BatchNorm2d(256),
+            # (B, 256, 14, 14)
+            nn.Conv2d(256, 256, kernel_size=7, padding=3),
             nn.ReLU(),
-            nn.MaxPool2d(2, 2),
-            # (B, 32, 14, 14) -> (B, 32, 7, 7)
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
-            # (B, 32, 7, 7) -> (B, 64, 7, 7)
+            # (B, 256, 14, 14)
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            # (B, 256, 7, 7)
+            nn.BatchNorm2d(256),
+            # (B, 256, 7, 7)
+            nn.Conv2d(256, 32, kernel_size=7, padding=3),
             nn.ReLU(),
-            nn.AdaptiveAvgPool2d((4, 4)),
-            # (B, 64, 7, 7) -> (B, 64, 4, 4)
+            # (B, 32, 7, 7)
+            nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
+            # (B, 32, 4, 4) -> Keras (3,3) with padding='valid' vs PyTorch (4,4)
+            nn.BatchNorm2d(32),
+            # (B, 32, 4, 4)
             nn.Flatten(),
-            # (B, 64, 4, 4) -> (B, 1024)
+            # (B, 32 * 4 * 4) -> (B, 512)
         )
         self.cnn_fc = nn.Sequential(
-            nn.Linear(64 * 4 * 4, 128),
+            nn.Linear(64*4*2, 128),
             nn.ReLU(),
             # (B, 1024) -> (B, 128)
         )

@@ -21,3 +21,4 @@ checkpoints/
 ## logs
 lightning_logs/
 .DS_Store
+.env
