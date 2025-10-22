@@ -70,7 +70,7 @@ curl -s localhost:8080/healthz
 ## Roadmap (stretch)
 - Deploy to VPS, host on a website
 - Interactive inputs (draw box)
-- Swap to MLflow registry
+[X] Swap to MLflow registry
 - KServe or Ray Serve
 - Evidently reports
 - Argo Rollouts
