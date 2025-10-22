@@ -25,7 +25,7 @@ class SimpleCNN(L.LightningModule):
             nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
             # (B, 32, 7, 7) -> (B, 64, 7, 7)
             nn.ReLU(),
-            nn.AdaptiveAvgPool2d((4, 4)),
+            nn.MaxPool2d(2, 2, padding=1),
             # (B, 64, 7, 7) -> (B, 64, 4, 4)
             nn.Flatten(),
             # (B, 64, 4, 4) -> (B, 1024)
