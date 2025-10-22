@@ -22,3 +22,4 @@ checkpoints/
 lightning_logs/
 .DS_Store
 .env
+.$architecture.drawio.bkp

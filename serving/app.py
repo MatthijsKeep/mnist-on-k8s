@@ -66,9 +66,7 @@ def extract_features_np(
     var = flat.var()
     stats = torch.tensor(
         np.array(list(hist) + [mean, var], dtype=np.float32)
-    ).unsqueeze(
-        0
-    )  # (1, 18)
+    ).unsqueeze(0)  # (1, 18)
     return image_norm, stats
 
 

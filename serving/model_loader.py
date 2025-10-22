@@ -14,6 +14,7 @@ def load_model():
     model.eval()
     return model
 
+
 def predict_from_features(
     model, image: torch.Tensor, stats: torch.Tensor
 ) -> tuple[int, dict[int, float]]:

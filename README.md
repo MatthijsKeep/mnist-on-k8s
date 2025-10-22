@@ -13,14 +13,12 @@ End-to-end, production-emulating ML system. Uses MNIST as example, but any datas
 - **Data & Features**: Torchvision Datasets (MNIST) -> Polars feature pipeline (normalized image + per-image stats + histogram)
 - **Feature Store**: Feast (offline uses Parquet, online Redis on Kubernetes)
 - **Training**: PyTorch Lightning CNN (on CPU or MPS for acceleration)
-- **Serving**: FastAPI, with Prometheus metrics; can fetch features from Feast or compute on the fly if you send a file (image in this case)
+- **Serving**: FastAPI, pulling model from MLFlow registry
 - **Orchestration**: Makefile for easy build and deploy(add Prefect later?)
 - **Observability**: Prometheus/Grafana (via Helm), `/metrics` endpoint, to be built out (latency, amount of calls)
 - **Kubernetes**: Minikube local cluster; Helm chart for API, to be expanded to more resources, easy to deploy to Cloud
 - **CI/CD**: GitHub Actions workflow (build/test/images/deploy), not set up yet
 - **Drift**: CronJob computing histogram drift (KL divergence between distributions)
-
-TODO: Insert architecture diagram
 
 ## Quickstart
 
