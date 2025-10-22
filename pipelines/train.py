@@ -24,14 +24,14 @@ MODEL_SAVE_PATH = ARTIFACTS_DIR / "model.pt"
 
 # MLflow experiment and registry names as constants
 EXPERIMENT_NAME = "mnist_cnn"
-REGISTERED_MODEL_NAME = "MNIST_CNN_Model"
+REGISTERED_MODEL_NAME = "MNIST_CNN_Model_complex"
 
 # Training hyperparameters as constants (avoids magic numbers)
 BATCH_SIZE = 256
 NUM_WORKERS = 4
 LEARNING_RATE = 1e-2
 NUM_CLASSES = 10
-EPOCHS = 1  # Default; can be overridden
+EPOCHS = 10
 SEED = 42
 
 # MinIO/S3 config (moved to env setup in main; constants for clarity, but use os.environ for security)
@@ -136,7 +136,7 @@ def main() -> None:
     X, stats, y = get_sample_batch(dm)
     stats_dim = stats.shape[1]
 
-    model = SimpleCNN(in_dim_stats=stats_dim, n_classes=NUM_CLASSES, lr=LEARNING_RATE)
+    model = ComplexCNN(in_dim_stats=stats_dim, n_classes=NUM_CLASSES, lr=LEARNING_RATE)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
     trainer = create_trainer(epochs=EPOCHS, device=device)
     trainer.fit(model, datamodule=dm)
