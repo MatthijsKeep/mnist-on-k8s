@@ -2,8 +2,6 @@ import json
 import lightning as L
 import mlflow
 import mlflow.pytorch
-from mlflow.tracking import MlflowClient
-import numpy as np
 import os
 import torch
 
@@ -12,7 +10,6 @@ from pathlib import Path
 from typing import Tuple
 from lightning.pytorch.loggers.mlflow import MLFlowLogger
 
-from models.simple_cnn import SimpleCNN
 from models.complex_cnn import ComplexCNN
 from models.datamodules.mnist import MNISTDataModule
 
@@ -118,7 +115,7 @@ def save_model(
     with open("metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
     
-    print(f"Logged model to MLflow.")
+    print("Logged model to MLflow.")
 
 
 def main() -> None:
