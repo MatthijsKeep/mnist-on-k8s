@@ -5,6 +5,7 @@ import lightning as L
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
+
 class ComplexCNN(L.LightningModule):
     """A more complex CNN combined with an MLP for image and stats classification."""
 
@@ -40,7 +41,7 @@ class ComplexCNN(L.LightningModule):
             # (B, 32 * 4 * 4) -> (B, 512)
         )
         self.cnn_fc = nn.Sequential(
-            nn.Linear(64*4*2, 128),
+            nn.Linear(64 * 4 * 2, 128),
             nn.ReLU(),
             # (B, 1024) -> (B, 128)
         )

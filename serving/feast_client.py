@@ -9,6 +9,7 @@ REPO_YAML = os.environ.get(
     "FEAST_REPO_CONFIG", "features/feast_repo/feature_store.yaml"
 )
 
+
 def get_online_features(image_id: int) -> np.ndarray:
     # Load base config from yaml
     config = load_repo_config(REPO, REPO_YAML)

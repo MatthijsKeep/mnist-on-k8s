@@ -21,6 +21,7 @@ dependencies = [
   "mlflow>=3.5.0",
   "lightning>=2.5.5",
   "boto3>=1.40.55",
+  "ruff>=0.14.1",
 ]
 
 [project.optional-dependencies]

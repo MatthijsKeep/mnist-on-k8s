@@ -37,6 +37,7 @@ MINIO_ACCESS_KEY = "minioadmin"
 MINIO_SECRET_KEY = "minioadmin"
 MLFLOW_TRACKING_URI = "http://localhost:5000"
 
+
 def get_sample_batch(
     dm: MNISTDataModule,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -91,11 +92,16 @@ def save_model(
     # Create sample inputs (use actual batch shapes from your datamodule)
     sample_image = torch.randn(1, 1, 28, 28)  # Batch of 1 image
     sample_stats = torch.randn(1, stats_dim)  # Batch of 1 stats
-    sample_output = model(sample_image, sample_stats)  # Forward pass to get output shape
+    sample_output = model(
+        sample_image, sample_stats
+    )  # Forward pass to get output shape
 
     signature = mlflow.models.infer_signature(
-        {"image": sample_image.numpy(), "stats": sample_stats.numpy()},  # Inputs as dict of numpy
-        sample_output.detach().numpy()  # Output as numpy
+        {
+            "image": sample_image.numpy(),
+            "stats": sample_stats.numpy(),
+        },  # Inputs as dict of numpy
+        sample_output.detach().numpy(),  # Output as numpy
     )
 
     mlflow.pytorch.log_model(
@@ -114,7 +120,7 @@ def save_model(
 
     with open("metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
-    
+
     print("Logged model to MLflow.")
 
 
@@ -152,7 +158,7 @@ def main() -> None:
         + ["mnist_stats:label"]
     )
 
-   # Resume the existing run and log the model to it
+    # Resume the existing run and log the model to it
     with mlflow.start_run(run_id=run_id):
         save_model(model, stats_dim, feature_refs)  # No run_id needed
         print(f"Model logged to run {run_id}")
@@ -166,7 +172,10 @@ def main() -> None:
             f"(view at {MLFLOW_TRACKING_URI}/#/models/{REGISTERED_MODEL_NAME})"
         )
     except Exception as e:
-        print(f"Registration failed: {e} (check MinIO permissions or if model artifact exists)")
+        print(
+            f"Registration failed: {e} (check MinIO permissions or if model artifact exists)"
+        )
+
 
 if __name__ == "__main__":
     main()

@@ -36,15 +36,15 @@ def compute_features(images: np.ndarray) -> pl.DataFrame:
 
 
 def validate(df: pl.DataFrame):
-    assert df.select(
-        pl.col("pix_mean").is_between(0, 1).all()
-    ).item(), "pix_mean out of [0,1]"
-    assert df.select(
-        pl.col("pix_var").is_between(0, 1).all()
-    ).item(), "pix_var out of [0,1]"
-    assert df.select(pl.col("updated_at").max()).item() <= np.datetime64(
-        "now", "ms"
-    ), "updated_at in future"
+    assert df.select(pl.col("pix_mean").is_between(0, 1).all()).item(), (
+        "pix_mean out of [0,1]"
+    )
+    assert df.select(pl.col("pix_var").is_between(0, 1).all()).item(), (
+        "pix_var out of [0,1]"
+    )
+    assert df.select(pl.col("updated_at").max()).item() <= np.datetime64("now", "ms"), (
+        "updated_at in future"
+    )
     # simple sanity: histogram rows sum to ~1 (density)
     hist_cols = [f"hist_{i}" for i in range(16)]
     sums = df.select(pl.sum_horizontal(hist_cols).alias("s")).to_series()
