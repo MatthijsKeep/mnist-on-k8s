@@ -4,14 +4,15 @@ image:
   tag: local
   pullPolicy: IfNotPresent
 replicaCount: 1
+revisionHistoryLimit: 3
 service:
   type: ClusterIP
   port: 80
 resources:
   requests:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: "200m"
+    memory: "1Gi"
   limits:
-    cpu: "500m"
-    memory: "512Mi"
+    cpu: "1000m"
+    memory: "4Gi"
 env: []

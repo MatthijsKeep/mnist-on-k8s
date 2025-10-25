@@ -45,7 +45,11 @@ ifeq ($(LOCAL),true)
 	helm repo add bitnami https://charts.bitnami.com/bitnami || true
 	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts || true
 	kubectl create ns $(NAMESPACE) || true
-	helm upgrade --install redis bitnami/redis -n $(NAMESPACE) --set architecture=standalone --set auth.enabled=true --set auth.password=$(REDIS_PASSWORD)
+	helm upgrade --install redis bitnami/redis -n $(NAMESPACE) \
+		--set architecture=standalone \
+		--set auth.enabled=true \
+		--set auth.password=$(REDIS_PASSWORD) \
+		--set master.resources.limits.memory=512Mi
 	helm upgrade --install kube-prom-stack prometheus-community/kube-prometheus-stack -n $(NAMESPACE) \
 		--set grafana.enabled=true --set grafana.service.type=ClusterIP
 	kubectl port-forward service/redis-master -n ml 6379:6379

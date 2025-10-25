@@ -7,6 +7,7 @@ metadata:
     app: mnist-api
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 10 }}
   selector:
     matchLabels:
       app: mnist-api
@@ -28,17 +29,29 @@ spec:
               value: redis-master.{{ .Release.Namespace }}.svc.cluster.local
             - name: REDIS_PASSWORD
               value: redispw #probably not the best way to do this in production
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-server.ml.svc.cluster.local:5000"
+            - name: MINIO_ENDPOINT_URL
+              value: "http://minio.ml.svc.cluster.local:9000"
+            - name: MINIO_ACCESS_KEY
+              value: "minioadmin"
+            - name: MINIO_SECRET_KEY
+              value: "minioadmin"
+            - name: MODEL_URI
+              value: "models:/mnist_cnn_model/1"
           resources:
             {{- toYaml .Values.resources | nindent 16 }}
           readinessProbe:
             httpGet:
               path: /healthz
               port: 8000
-            initialDelaySeconds: 3
+            initialDelaySeconds: 30
             periodSeconds: 5
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /healthz
               port: 8000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             periodSeconds: 10
+            failureThreshold: 3
