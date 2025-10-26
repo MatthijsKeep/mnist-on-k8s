@@ -15,6 +15,8 @@ spec:
     metadata:
       labels:
         app: mnist-api
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: api
@@ -30,7 +32,7 @@ spec:
             - name: REDIS_PASSWORD
               value: redispw #probably not the best way to do this in production
             - name: MLFLOW_TRACKING_URI
-              value: "http://mlflow-server.ml.svc.cluster.local:5000"
+              value: "http://mlflow-service.ml.svc.cluster.local:5000"
             - name: MINIO_ENDPOINT_URL
               value: "http://minio.ml.svc.cluster.local:9000"
             - name: MINIO_ACCESS_KEY
@@ -45,13 +47,13 @@ spec:
             httpGet:
               path: /healthz
               port: 8000
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            failureThreshold: 3
+            initialDelaySeconds: 240
+            periodSeconds: 10
+            failureThreshold: 5
           livenessProbe:
             httpGet:
               path: /healthz
               port: 8000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 300
             periodSeconds: 10
             failureThreshold: 3

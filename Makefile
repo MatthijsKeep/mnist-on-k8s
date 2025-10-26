@@ -3,19 +3,18 @@
 # Variables
 NAMESPACE ?= ml
 IMAGE_NAME ?= mnist-api
-IMAGE_TAG ?= local# Override for versions, e.g., make deploy IMAGE_TAG=v1.0
-REGISTRY ?= yourusername# Set for cloud, e.g., your Docker Hub/ECR
-LOCAL ?= true# true for Minikube local; false for cloud/VPS
+IMAGE_TAG ?= local
+REGISTRY ?= yourusername
+LOCAL ?= true
 MINIKUBE_PROFILE ?= mnist
 CLUSTER_NAME ?= $(MINIKUBE_PROFILE)
-REDIS_PASSWORD ?= redispw#set from environment or helm chart during bootstrap
+REDIS_PASSWORD ?= redispw
 
 # Full image ref
-# After variables section
 ifeq ($(LOCAL),true)
-REPO_PATH := $(IMAGE_NAME)# e.g., mnist-api (local)
+REPO_PATH := $(IMAGE_NAME)
 else
-REPO_PATH := $(REGISTRY)/$(IMAGE_NAME)# e.g., yourusername/mnist-api (remote)
+REPO_PATH := $(REGISTRY)/$(IMAGE_NAME)
 endif
 
 # Echo value of local
@@ -24,7 +23,6 @@ print-local:
 
 print-repo:
 	@echo "Image repository path is '$(REPO_PATH)'"
-
 
 help:  ## Show this help
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -52,9 +50,9 @@ ifeq ($(LOCAL),true)
 		--set master.resources.limits.memory=512Mi
 	helm upgrade --install kube-prom-stack prometheus-community/kube-prometheus-stack -n $(NAMESPACE) \
 		--set grafana.enabled=true --set grafana.service.type=ClusterIP
-	kubectl port-forward service/redis-master -n ml 6379:6379
-	kubectl port-forward service/kube-prom-stack-grafana -n ml 3000:80 &
 	@echo "Bootstrap complete for '$(NAMESPACE)'."
+	@echo "To access Redis: kubectl port-forward service/redis-master -n ml 6379:6379"
+	@echo "To access Grafana: kubectl port-forward service/kube-prom-stack-grafana -n ml 3000:80"
 else
 	@echo "Skipping bootstrap for remote; run manually if needed."
 endif
@@ -63,22 +61,38 @@ features:  ## Run feature pipeline
 	uv run python -m pipelines.feature_pipeline
 
 feast:  ## Apply and materialize Feast
-	cd features/feast_repo && uv run feast apply && uv run feast materialize-incremental $$(date +%Y-%m-%dT%H:%M:%S) \
-		&& cd -
+	cd features/feast_repo && uv run feast apply && uv run feast materialize-incremental $$(date +%Y-%m-%dT%H:%M:%S) && cd -
 
 train:  ## Train model
 	uv run python -m pipelines.train
 
-deploy: build
+deploy: build  ## Build and deploy API to cluster
 	helm upgrade --install mnist-api infra/helm/api -n $(NAMESPACE) \
 		--set image.repository=$(REPO_PATH) \
 		--set image.tag=$(IMAGE_TAG)
 
-build:
+# FIXED: Use shell script to keep environment variables
+build:  ## Build Docker image
 ifeq ($(LOCAL),true)
-	eval $$(minikube -p $(MINIKUBE_PROFILE) docker-env) && docker build -f Dockerfile.api -t $(IMAGE_NAME):$(IMAGE_TAG) .  # Note: tags local name
+	@echo "Building image in Minikube Docker context..."
+	@echo "Building new image..."
+	@eval $$(minikube -p $(MINIKUBE_PROFILE) docker-env) && \
+		docker build --no-cache -f Dockerfile.api -t $(IMAGE_NAME):$(IMAGE_TAG) . && \
+		echo "Image built successfully in Minikube"
+	@echo "Loading image into Minikube..."
+	minikube -p $(MINIKUBE_PROFILE) image load $(IMAGE_NAME):$(IMAGE_TAG)
 else
-	docker build -f Dockerfile.api -t $(REPO_PATH):$(IMAGE_TAG) .
+	@echo "Building image for remote registry..."
+	docker build --no-cache -f Dockerfile.api -t $(REPO_PATH):$(IMAGE_TAG) .
+	docker push $(REPO_PATH):$(IMAGE_TAG)
+endif
+
+# Alternative build using shell script (more reliable)
+build-script:  ## Build using shell script (alternative)
+ifeq ($(LOCAL),true)
+	@bash -c 'eval $$(minikube -p $(MINIKUBE_PROFILE) docker-env) && docker build --no-cache -f Dockerfile.api -t $(IMAGE_NAME):$(IMAGE_TAG) .'
+else
+	docker build --no-cache -f Dockerfile.api -t $(REPO_PATH):$(IMAGE_TAG) .
 	docker push $(REPO_PATH):$(IMAGE_TAG)
 endif
 

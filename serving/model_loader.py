@@ -11,7 +11,7 @@ ARTIFACT = Path("artifacts/model.pt")
 MINIO_ENDPOINT_URL = "http://minio.ml.svc.cluster.local:9000"
 MINIO_ACCESS_KEY = "minioadmin"
 MINIO_SECRET_KEY = "minioadmin"
-MLFLOW_TRACKING_URI = "http://mlflow-server.ml.svc.cluster.local:5000"
+MLFLOW_TRACKING_URI = "http://mlflow-service.ml.svc.cluster.local:5000"
 
 def load_model():
     ckpt = torch.load(ARTIFACT, map_location="cpu")

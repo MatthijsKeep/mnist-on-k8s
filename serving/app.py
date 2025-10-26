@@ -13,7 +13,7 @@ import io
 import torch
 
 # Get config from environment variables (set in Kubernetes deployment)
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-server.ml.svc.cluster.local:5000")
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.ml.svc.cluster.local:5000")
 MINIO_ENDPOINT_URL = os.getenv("MINIO_ENDPOINT_URL", "http://minio.ml.svc.cluster.local:9000")
 MODEL_URI = os.getenv("MODEL_URI", "models:/mnist_cnn_model/1")
 

@@ -4,24 +4,24 @@ name = "mnist-on-k8s"
 version = "1.1.0"
 requires-python = ">=3.13"
 dependencies = [
+  "boto3>=1.40.55",
+  "black>=25.9.0",
   "fastapi>=0.110",
-  "uvicorn[standard]>=0.23",
-  "prometheus-client>=0.18",
-  "polars>=0.20",
+  "feast[redis]>=0.42",
+  "lightning>=2.5.5",
+  "mlflow>=3.5.0",
   "numpy>=1.26",
+  "polars>=0.20",
+  "prometheus-client>=0.18",
+  "python-multipart>=0.0.20",
+  "pyyaml>=6.0",
   "pillow>=10.2",
+  "redis>=4.2.2",
+  "ruff>=0.14.1",
+  "scikit-learn>=1.7.2",
   "torch>=2.1",
   "torchvision>=0.16",
-  "feast[redis]>=0.42",
-  "redis>=4.2.2",
-  "pyyaml>=6.0",
-  "scikit-learn>=1.7.2",
-  "python-multipart>=0.0.20",
-  "black>=25.9.0",
-  "mlflow>=3.5.0",
-  "lightning>=2.5.5",
-  "boto3>=1.40.55",
-  "ruff>=0.14.1",
+  "uvicorn[standard]>=0.23",
 ]
 
 [project.optional-dependencies]
