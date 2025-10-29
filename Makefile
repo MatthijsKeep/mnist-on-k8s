@@ -75,12 +75,8 @@ deploy: build  ## Build and deploy API to cluster
 build:  ## Build Docker image
 ifeq ($(LOCAL),true)
 	@echo "Building image in Minikube Docker context..."
-	@echo "Building new image..."
-	@eval $$(minikube -p $(MINIKUBE_PROFILE) docker-env) && \
-		docker build --no-cache -f Dockerfile.api -t $(IMAGE_NAME):$(IMAGE_TAG) . && \
-		echo "Image built successfully in Minikube"
-	@echo "Loading image into Minikube..."
-	minikube -p $(MINIKUBE_PROFILE) image load $(IMAGE_NAME):$(IMAGE_TAG)
+	@bash -c 'eval $$(minikube -p $(MINIKUBE_PROFILE) docker-env) && docker build --no-cache -f Dockerfile.api -t $(IMAGE_NAME):$(IMAGE_TAG) .'
+	@echo "Image built successfully in Minikube"
 else
 	@echo "Building image for remote registry..."
 	docker build --no-cache -f Dockerfile.api -t $(REPO_PATH):$(IMAGE_TAG) .

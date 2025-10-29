@@ -32,9 +32,9 @@ spec:
             - name: REDIS_PASSWORD
               value: redispw #probably not the best way to do this in production
             - name: MLFLOW_TRACKING_URI
-              value: "http://mlflow-service.ml.svc.cluster.local:5000"
+              value: "http://host.minikube.internal:5000"
             - name: MINIO_ENDPOINT_URL
-              value: "http://minio.ml.svc.cluster.local:9000"
+              value: "http://host.minikube.internal:9000"
             - name: MINIO_ACCESS_KEY
               value: "minioadmin"
             - name: MINIO_SECRET_KEY

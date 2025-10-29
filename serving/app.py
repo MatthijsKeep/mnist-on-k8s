@@ -26,13 +26,19 @@ async def lifespan(app: FastAPI):
     print(f"Loading model from: {MODEL_URI}")
     try:
         model = load_model_from_mlflow(MODEL_URI)
-        print("Model loaded successfully!")
-        print("=" * 50)
+        print("Model loaded successfully from MLflow!")
     except Exception as e:
-        print(f"ERROR loading model: {e}")
-        import traceback
-        traceback.print_exc()
-        raise
+        print(f"WARNING: Could not load from MLflow: {e}")
+        print("Falling back to bundled model...")
+        try:
+            model = load_model()
+            print("Model loaded successfully from bundled artifacts!")
+        except Exception as e2:
+            print(f"ERROR: Could not load bundled model either: {e2}")
+            import traceback
+            traceback.print_exc()
+            raise
+    print("=" * 50)
     
     yield  # Application runs here
     
@@ -66,11 +72,6 @@ def healthz():
 @app.get("/metrics")
 def metrics():
     return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
-
-# Load model at startup, the model is either MNIST_CNN_Model or MNIST_CNN_Model_complex
-# model uri is built in train.py like this: model_uri = f"runs:/{run_id}/model"
-MODEL_URI = "models:/mnist_cnn_model/1"
-model = load_model_from_mlflow(MODEL_URI)
 
 @app.post("/predict_by_id")
 def predict_by_id(image_id: int):

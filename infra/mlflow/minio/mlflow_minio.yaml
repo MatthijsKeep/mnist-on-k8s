@@ -50,7 +50,19 @@ spec:
       volumes:
       - name: minio-storage
         persistentVolumeClaim:
-          claimName: mlflow-pvc
+          claimName: minio-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: ml
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
